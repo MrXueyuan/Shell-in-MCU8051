@@ -1,4 +1,15 @@
 {
     "files.encoding": "gb2312",
-    "files.defaultLanguage": "8051"
+    "files.defaultLanguage": "8051",
+    "C_Cpp.errorSquiggles": "Enabled",
+    "editor.fontSize": 16,
+    "editor.fontLigatures": true,
+    "C_Cpp.intelliSenseEngineFallback": "Disabled",
+    "files.associations": {
+        "stdafx.h": "c",
+        "intrins.h": "c",
+        "core.h": "c",
+        "stc12.h": "c"
+    },
+    "C_Cpp.dimInactiveRegions": true
 }

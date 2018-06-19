@@ -1,5 +1,5 @@
 # Shell-in-MCU8051
-Implementing the URAT Shell in the Enhanced Intel 8051 MCU, Hardware used to STC12C5A60S and CH340G.
+Implementing the URAT Shell in the Enhanced Intel 8051 MCU, Hardware used to STC12C5A60S2 and CH340G.
 
 ## Why am I doing this?
 I want to control the MCU of a node remotely.

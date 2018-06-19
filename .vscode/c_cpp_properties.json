@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "name": "8051",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "${env.KEIL_C51_INC}",
+                    "D:\\Program Files\\Keil_C51\\C51\\INC"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "D:\\Program Files\\Keil_C51\\C51\\INC"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "sbit=char",
+                "sfr=char",
+                "bit=char",
+                "FOSC_160000"
+            ],
+            "compilerPath": "D:\\Program Files\\Keil_C51\\C51\\BIN\\CX51.exe"
+        }
+    ],
+    "version": 4
+}

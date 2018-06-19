@@ -8,12 +8,15 @@
  *****************************************************************************/ 
 
 #ifndef STDAFX_H_
-#define STDAFX_H_
+    #define STDAFX_H_
 
-/* Shell内核头文件调用 */
-#include "..\Shell\core.h"
+    /* 头文件调用 */
+    #include "STC12.h"          //单片机头文件
+    #include <intrins.h>        //单片机指令头文件
+    #include "..\Shell\core.h"  //Shell内核头文件调用
+    #include "..\UART\UART.h"   //串口头文件调用
 
-/* 串口头文件调用 */
-#include "..\UART\UART.h"
+    /* 定义校验位 */
+    #define PARITYBIT NONE_PARITY
 
 #endif /* STDAFX_H_ */

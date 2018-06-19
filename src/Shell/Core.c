@@ -7,7 +7,9 @@
  * History:         none
  *****************************************************************************/ 
 
-#include "..\..\inc\Shell\core.h"
+/* 链接头文件 */
+#include "..\..\inc\Shell\Core.h"
+#include "..\..\inc\Main\stdafx.h"
 
 
 
@@ -15,7 +17,7 @@
  * Function:        runShell
  * Description:     初始化Shell，并运行
  * Calls:           Shell
- * Called By:       main.c
+ * Called By:       main
  * Input:           none
  * Output:          void
  * Return:          void
