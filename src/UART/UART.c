@@ -4,7 +4,7 @@
  * Author:          Mr.Xueyuan
  * Version:         v0.0.01-Frame
  * Date:            2018/6/18
- * History:         none
+ * History:         git
  *****************************************************************************/ 
 
 /* 链接头文件 */
@@ -12,6 +12,8 @@
 #include "..\..\inc\Main\stdafx.h"
 
 
+/* 变量定义 */
+bit Busy;
 
 /*************************************************
  * Function:        UartInit
@@ -40,5 +42,30 @@ void UartInit(void)
 	BRT = 255-INT(FOSC/BAUD/32);	//设定独立波特率发生器重装值
 	AUXR |= 0x01;		            //串口1选择独立波特率发生器为波特率发生器
 	AUXR |= 0x10;		            //启动独立波特率发生器
+}
+
+
+void SendData(char dat)
+{
+    while (Busy);               //等待前面的数据发送完成
+    ACC = dat;                  //获取校验位P (PSW.0)
+    if (P)                      //根据P来设置校验位
+    {
+        #if (PARITYBIT == ODD_PARITY)
+            TB8 = 0;                //设置校验位为0
+        #elif (PARITYBIT == EVEN_PARITY)
+            TB8 = 1;                //设置校验位为1
+        #endif
+    }
+    else
+    {
+        #if (PARITYBIT == ODD_PARITY)
+            TB8 = 1;                //设置校验位为1
+        #elif (PARITYBIT == EVEN_PARITY)
+            TB8 = 0;                //设置校验位为0
+        #endif
+    }
+    Busy = 1;
+    SBUF = ACC;                 //写数据到UART数据寄存器
 }
 
