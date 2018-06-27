@@ -48,6 +48,7 @@ void UartInit(void)
 void SendData(char dat)
 {
     while (Busy);               //等待前面的数据发送完成
+    
     ACC = dat;                  //获取校验位P (PSW.0)
     if (P)                      //根据P来设置校验位
     {
@@ -65,6 +66,7 @@ void SendData(char dat)
             TB8 = 0;                //设置校验位为0
         #endif
     }
+
     Busy = 1;
     SBUF = ACC;                 //写数据到UART数据寄存器
 }
