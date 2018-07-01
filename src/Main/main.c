@@ -2,8 +2,8 @@
  * File name:       main.c
  * Description:     主函数文件，包含初始化函数及入口函数。
  * Author:          Mr.Xueyuan
- * Version:         v0.0.01-Frame
- * Date:            2018/6/18
+ * Version:         v0.0.03-Frame
+ * Date:            2018/7/1
  * History:         git
  *****************************************************************************/ 
 
@@ -42,11 +42,34 @@ int main (void)
     Init();
 
     /* 运行Shell代码 */
-    runShell();
+    InitShell();
 
     /* 死循环 */
     while (1) 
     {
         
     }   //while
+}
+
+
+/*************************************************
+ * Function:        Uart_Service
+ * Description:     串口服务程序
+ * Calls:           none
+ * Called By:       UartInit
+ * Input:           none
+ * Output:          void
+ * Return:          void
+ *************************************************/ 
+void Uart_Service () interrupt 4 using 1
+{
+    if (RI)
+    {
+        RI = 0;                 //清除RI位
+    }
+    if (TI)
+    {
+        TI = 0;                 //清除TI位
+        Busy = 0;               //清忙标志
+    }
 }

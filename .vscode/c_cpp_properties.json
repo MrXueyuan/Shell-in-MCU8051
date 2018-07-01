@@ -5,13 +5,13 @@
             "browse": {
                 "path": [
                     "${workspaceFolder}",
-                    "${env.KEIL_C51_INC}",
-                    "D:\\Program Files\\Keil_C51\\C51\\INC"
+                    "${env.KEIL_INC}",
+                    "D:\\Program Files\\Keil\\C51\\INC"
                 ],
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
-                "D:\\Program Files\\Keil_C51\\C51\\INC"
+                "D:\\Program Files\\Keil\\C51\\INC"
             ],
             "defines": [
                 "_DEBUG",
@@ -22,7 +22,7 @@
                 "bit=char",
                 "FOSC_160000"
             ],
-            "compilerPath": "D:\\Program Files\\Keil_C51\\C51\\BIN\\CX51.exe"
+            "compilerPath": "D:\\Program Files\\Keil\\C51\\BIN\\CX51.exe"
         }
     ],
     "version": 4

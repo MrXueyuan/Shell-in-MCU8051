@@ -4,11 +4,14 @@
  * Author:          Mr.Xueyuan
  * Version:         v0.0.01-Frame
  * Date:            2018/6/18
- * History:         v0.0.01编写基本程序框架(6.18)
+ * History:         git
  *****************************************************************************/ 
 
 #ifndef UART_H_
     #define UART_H_
+
+    /* 变量定义 */
+    bit Busy;                           //串口忙标志
 
     /* 频率调整 */
     #define FOSC 11059200L          //系统频率
