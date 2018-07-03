@@ -30,9 +30,9 @@ void UartInit(void)
     #if (PARITYBIT == NONE_PARITY)
         SCON = 0x50;                //8位可变波特率
     #elif (PARITYBIT == ODD_PARITY) || (PARITYBIT == EVEN_PARITY) || (PARITYBIT == MARK_PARITY)
-        SCON = 0xda;                //9位可变波特率,校验位初始为1
+        SCON = 0xDA;                //9位可变波特率,校验位初始为1
     #elif (PARITYBIT == SPACE_PARITY)
-        SCON = 0xd2;                //9位可变波特率,校验位初始为0
+        SCON = 0xD2;                //9位可变波特率,校验位初始为0
     #endif
 
 	AUXR |= 0x04;		            //独立波特率发生器时钟为Fosc,即1T
