@@ -14,19 +14,19 @@
 
 /* 显示文本 */
 xdata char Boot_inf_UART[] = {
-    "/r/n ...   ..."
-    "/r/n"
-    "/r/n UART init OK"}; //伪装代码
+    "\r\n ...   ..."
+    "\r\n"
+    "\r\n UART init OK"}; //伪装代码
 
 xdata char Boot_inf_sys[] = {
-    "/r/n System Boot Now ..."}; //启动
+    "\r\n System Boot Now ..."}; //启动
 
 xdata char Boot_inf_STime[] = {
-    "/r/n System Time Boot Now ..."
-    "/r/n STime init OK"}; //系统时钟初始化提示信息
+    "\r\n System Time Boot Now ..."
+    "\r\n STime init OK"}; //系统时钟初始化提示信息
 
 xdata char Sys_inf_Head[] = {
-    "/r/n User@STC12C5A60S2/t# "}; //默认提示信息
+    "\r\n User@STC12C5A60S2\t# "}; //默认提示信息
 
 /*************************************************
  * Function:        InitShell
