@@ -1,6 +1,6 @@
 #ifndef __STC12C5A60S2_H_
 #define __STC12C5A60S2_H_
-
+#include <intrins.h>
 extern void          _nop_     (void);
 
 typedef 	unsigned char	u8;

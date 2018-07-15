@@ -1,6 +1,6 @@
 /***************************************************************************** 
  * File name:       stdafx.h
- * Description:     ä¸»è°ƒç”¨å¤´æ–‡ä»¶ï¼Œåœ¨æ­¤å¤´æ–‡ä»¶ä¸­è°ƒç”¨å…¶ä»–å¤´æ–‡ä»¶ï¼Œå¹¶å®šä¹‰éƒ¨åˆ†å¯æ›´æ”¹å¸¸é‡ã€‚
+ * Description:     Ö÷µ÷ÓÃÍ·ÎÄ¼ş£¬ÔÚ´ËÍ·ÎÄ¼şÖĞµ÷ÓÃÆäËûÍ·ÎÄ¼ş£¬²¢¶¨Òå²¿·Ö¿É¸ü¸Ä³£Á¿¡£
  * Author:          Mr.Xueyuan
  * Version:         v0.0.02-Frame
  * Date:            2018/6/20
@@ -10,22 +10,32 @@
 #ifndef STDAFX_H_
     #define STDAFX_H_
 
-    /* å®šä¹‰ä½¿ç”¨çš„èŠ¯ç‰‡ */
+    /* ¶¨ÒåÊ¹ÓÃµÄĞ¾Æ¬ */
     #define STC12  1
     #define STC15  2
     #define IC_SET STC12        //STC12 or STC15
 
-    /* å¤´æ–‡ä»¶è°ƒç”¨ */
-    #if (IC_SET == STC12)       //èŠ¯ç‰‡å¤´æ–‡ä»¶è®¾ç½®
+    /* ÆµÂÊµ÷Õû */
+    #define FOSC 11059200L          //ÏµÍ³ÆµÂÊ
+    #define BAUD 9600             //´®¿Ú²¨ÌØÂÊ
+
+    /* Í·ÎÄ¼şµ÷ÓÃ */
+    #if (IC_SET == STC12)       //Ğ¾Æ¬Í·ÎÄ¼şÉèÖÃ
         #include "STC12.h" 
     #elif (IC_SET == STC15)
         #include "STC15.h"
     #endif
-    #include <intrins.h>        //å•ç‰‡æœºæŒ‡ä»¤å¤´æ–‡ä»¶
-    #include "..\Shell\core.h"  //Shellå†…æ ¸å¤´æ–‡ä»¶è°ƒç”¨
-    #include "..\UART\UART.h"   //ä¸²å£å¤´æ–‡ä»¶è°ƒç”¨
+    #include <intrins.h>        //µ¥Æ¬»úÖ¸ÁîÍ·ÎÄ¼ş
+    #include "..\Shell\core.h"  //ShellÄÚºËÍ·ÎÄ¼şµ÷ÓÃ
+    #include "..\UART\UART.h"   //´®¿ÚÍ·ÎÄ¼şµ÷ÓÃ
 
-    /* å®šä¹‰UARTæ ¡éªŒä½ */
+    /* ¶¨ÒåUARTĞ£ÑéÎ» */
     #define PARITYBIT NONE_PARITY
+
+    /* ±äÁ¿µ÷ÓÃ */
+    u8  code count_Stime = 0;   //Ê±¼ä¼ÆÊı
+    u32 code SystemTime = 0;    //ÏµÍ³Ê±¼ä
+    bit Con_Flag = true;        //ÊäÈë´ı´¦Àí±êÖ¾
+    char    Con_cache[80];      //¿ØÖÆÌ¨»º´æ
 
 #endif /* STDAFX_H_ */

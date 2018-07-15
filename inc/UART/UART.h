@@ -13,10 +13,6 @@
     /* 变量定义 */
     bit Busy;                           //串口忙标志
 
-    /* 频率调整 */
-    #define FOSC 11059200L          //系统频率
-    #define BAUD 9600             //串口波特率
-
     /* 奇偶校验位 */
     #define NONE_PARITY     0       //无校验
     #define ODD_PARITY      1       //奇校验

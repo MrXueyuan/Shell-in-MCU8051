@@ -39,6 +39,7 @@ void UartInit(void)
 	BRT = 255-INT(FOSC/BAUD/32);	//设定独立波特率发生器重装值
 	AUXR |= 0x01;		            //串口1选择独立波特率发生器为波特率发生器
 	AUXR |= 0x10;		            //启动独立波特率发生器
+    ES = 1;                         //启动串口1中断
 }
 
 /*************************************************
@@ -53,6 +54,7 @@ void UartInit(void)
 void SendData(char dat)
 {
     while (Busy);               //等待前面的数据发送完成
+
     #if (PARITYBI != NONE_PARITY)
         ACC = dat;                  //获取校验位P (PSW.0)
         if (P)                      //根据P来设置校验位
@@ -72,7 +74,9 @@ void SendData(char dat)
             #endif
         }
     #endif
+
     Busy = 1;
+
     #if (PARITYBI != NONE_PARITY)
         SBUF = ACC;                 //将已经进行校验的9位数据写到UART数据寄存器
     #else 
