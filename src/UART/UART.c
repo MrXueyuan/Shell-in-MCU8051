@@ -5,12 +5,21 @@
  * Version:         v0.0.03-Frame
  * Date:            2018/7/1
  * History:         git
- *****************************************************************************/ 
+ *****************************************************************************/
 
 /* 链接头文件 */
 #include "..\..\inc\Main\stdafx.h"
 
+/* 定义变量 */
+bit Busy = 0;
 
+/* 定义UART校验位 */
+#define PARITYBIT NONE_PARITY
+
+/* 定义UART奇偶校验位 */
+#define NONE_PARITY 0 //无校验
+#define ODD_PARITY 1  //奇校验
+#define EVEN_PARITY 2 //偶校验
 
 /*************************************************
  * Function:        UartInit
@@ -21,25 +30,25 @@
  * Input:           none
  * Output:          void
  * Return:          void
- *************************************************/ 
-void UartInit(void)	
+ *************************************************/
+void UartInit(void)
 {
-	PCON &= 0x7F;		            //波特率不倍速
+    PCON &= 0x7F; //波特率不倍速
 
-    /* 波特率及校验位设置 */
-    #if (PARITYBIT == NONE_PARITY)
-        SCON = 0x50;                //8位可变波特率
-    #elif (PARITYBIT == ODD_PARITY) || (PARITYBIT == EVEN_PARITY) || (PARITYBIT == MARK_PARITY)
-        SCON = 0xDA;                //9位可变波特率,校验位初始为1
-    #elif (PARITYBIT == SPACE_PARITY)
-        SCON = 0xD2;                //9位可变波特率,校验位初始为0
-    #endif
+/* 波特率及校验位设置 */
+#if (PARITYBIT == NONE_PARITY)
+    SCON = 0x50; //8位可变波特率
+#elif (PARITYBIT == ODD_PARITY) || (PARITYBIT == EVEN_PARITY) || (PARITYBIT == MARK_PARITY)
+    SCON = 0xDA; //9位可变波特率,校验位初始为1
+#elif (PARITYBIT == SPACE_PARITY)
+    SCON = 0xD2; //9位可变波特率,校验位初始为0
+#endif
 
-	AUXR |= 0x04;		            //独立波特率发生器时钟为Fosc,即1T
-	BRT = 255-INT(FOSC/BAUD/32);	//设定独立波特率发生器重装值
-	AUXR |= 0x01;		            //串口1选择独立波特率发生器为波特率发生器
-	AUXR |= 0x10;		            //启动独立波特率发生器
-    ES = 1;                         //启动串口1中断
+    AUXR |= 0x04;                        //独立波特率发生器时钟为Fosc,即1T
+    BRT = 255 - (int)(FOSC / BAUD / 32); //设定独立波特率发生器重装值
+    AUXR |= 0x01;                        //串口1选择独立波特率发生器为波特率发生器
+    AUXR |= 0x10;                        //启动独立波特率发生器
+    ES = 1;                              //启动串口1中断
 }
 
 /*************************************************
@@ -50,38 +59,39 @@ void UartInit(void)
  * Input:           Char:16位数.串口发送数据
  * Output:          void
  * Return:          void
- *************************************************/ 
+ *************************************************/
 void SendData(char dat)
 {
-    while (Busy);               //等待前面的数据发送完成
+    while (Busy)
+        ; //等待前面的数据发送完成
 
-    #if (PARITYBI != NONE_PARITY)
-        ACC = dat;                  //获取校验位P (PSW.0)
-        if (P)                      //根据P来设置校验位
-        {
-            #if (PARITYBIT == ODD_PARITY)
-                TB8 = 0;                //设置校验位为0
-            #elif (PARITYBIT == EVEN_PARITY)
-                TB8 = 1;                //设置校验位为1
-            #endif
-        }
-        else
-        {
-            #if (PARITYBIT == ODD_PARITY)
-                TB8 = 1;                //设置校验位为1
-            #elif (PARITYBIT == EVEN_PARITY)
-                TB8 = 0;                //设置校验位为0
-            #endif
-        }
-    #endif
+#if (PARITYBIT != NONE_PARITY)
+    ACC = dat; //获取校验位P (PSW.0)
+    if (P)     //根据P来设置校验位
+    {
+#if (PARITYBIT == ODD_PARITY)
+        TB8 = 0; //设置校验位为0
+#elif (PARITYBIT == EVEN_PARITY)
+        TB8 = 1; //设置校验位为1
+#endif
+    }
+    else
+    {
+#if (PARITYBIT == ODD_PARITY)
+        TB8 = 1; //设置校验位为1
+#elif (PARITYBIT == EVEN_PARITY)
+        TB8 = 0; //设置校验位为0
+#endif
+    }
+#endif
+
+#if (PARITYBIT != NONE_PARITY)
+    SBUF = ACC; //将已经进行校验的9位数据写到UART数据寄存器
+#else
+    SBUF = dat;  //写8位数据到UART数据寄存器
+#endif
 
     Busy = 1;
-
-    #if (PARITYBI != NONE_PARITY)
-        SBUF = ACC;                 //将已经进行校验的9位数据写到UART数据寄存器
-    #else 
-        SBUF = dat;                 //写8位数据到UART数据寄存器
-    #endif
 }
 
 /*************************************************
@@ -92,11 +102,9 @@ void SendData(char dat)
  * Input:           Char:字符串指针
  * Output:          void
  * Return:          void
- *************************************************/ 
+ *************************************************/
 void SendString(char *s)
 {
-    while (*s)                  //检测字符串结束标志
-    {
-        SendData(*s++);         //发送当前字符
-    }
+    while (*s != '\0')
+        SendData(*s++);
 }

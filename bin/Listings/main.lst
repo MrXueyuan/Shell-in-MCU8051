@@ -1,0 +1,136 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              07/15/2018 18:15:19 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Program Files\Keil\C51\BIN\C51.EXE ..\src\Main\main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          /***************************************************************************** 
+   2           * File name:       main.c
+   3           * Description:     主函数文件，包含初始化函数及入口函数。
+   4           * Author:          Mr.Xueyuan
+   5           * Version:         v0.0.03-Frame
+   6           * Date:            2018/7/1
+   7           * History:         git
+   8           *****************************************************************************/
+   9          
+  10          /* 主调用头文件 */
+  11          #include "..\..\inc\Main\stdafx.h"
+  12          
+  13          /* 变量调用初始化 */
+  14          data bit Con_Flag = 0;    //输入待处理标志
+  15          xdata char Con_cache[80]; //控制台缓存
+  16          data u8 Con_C_cache = 0;  //控制台指针缓存
+  17          data u8 count_Stime = 0;  //时间计数
+  18          xdata u32 SystemTime = 0; //系统时间
+  19          
+  20          /*************************************************
+  21           * Function:        Init
+  22           * Description:     单片机初始化函数
+  23           * Calls:           URATInit
+  24           * Called By:       main
+  25           * Input:           none
+  26           * Output:          void
+  27           * Return:          void
+  28           *************************************************/
+  29          void Init(void)
+  30          {
+  31   1          UartInit(); //串口初始化
+  32   1          EA = 1;     //打开总中断
+  33   1      }
+  34          
+  35          /*************************************************
+  36           * Function:        main
+  37           * Description:     主函数
+  38           * Calls:           All
+  39           * Called By:       none
+  40           * Input:           none
+  41           * Output:          void
+  42           * Return:          void
+  43           *************************************************/
+  44          int main(void)
+  45          {
+  46   1          /* 单片机初始化 */
+  47   1          Init();
+  48   1      
+  49   1          /* 运行Shell代码 */
+  50   1          InitShell();
+  51   1      
+  52   1          /* 死循环 */
+  53   1          while (1)
+  54   1          {
+C51 COMPILER V9.59.0.0   MAIN                                                              07/15/2018 18:15:19 PAGE 2   
+
+  55   2          } //while
+  56   1      }
+  57          
+  58          /*************************************************
+  59           * Function:        STime
+  60           * Description:     系统时间定时器
+  61           * Calls:           none
+  62           * Called By:       STimeInit
+  63           * Input:           none
+  64           * Output:          SystemTime
+  65           * Return:          void
+  66           *************************************************/
+  67          void STime(void) interrupt 3 using 1
+  68          {
+  69   1          TL1 = 0x00;            //复位定时初值
+  70   1          TH1 = 0x4C;            //复位定时初值
+  71   1          count_Stime++;         //时间计数递增
+  72   1          if (count_Stime == 20) //时间计数置位
+  73   1          {
+  74   2              count_Stime = 0; //复位时间计数
+  75   2              SystemTime += 1; //系统时间计时
+  76   2          }
+  77   1      }
+  78          
+  79          /*************************************************
+  80           * Function:        Uart_Service
+  81           * Description:     串口服务程序
+  82           * Calls:           none
+  83           * Called By:       UartInit
+  84           * Input:           none
+  85           * Output:          void
+  86           * Return:          void
+  87           *************************************************/
+  88          void Uart_Service() interrupt 4 using 1
+  89          {
+  90   1          if (RI)
+  91   1          {
+  92   2              ES = 0;           //暂停串口中断  停干扰
+  93   2              if (SBUF != 0x0d) //判断回车
+  94   2              {
+  95   3                  Con_Flag = 1;    //输入待处理标志为True
+  96   3                  Con_C_cache = 0; //指针置零
+  97   3              }
+  98   2              else
+  99   2                  Con_cache[Con_C_cache++] = SBUF; //将串口输入缓冲区的数值压入缓冲区指针
+ 100   2              RI = 0;                              //清除RI位
+ 101   2              ES = 1;                              //打开串口中断
+ 102   2          }
+ 103   1          if (TI)
+ 104   1          {
+ 105   2              TI = 0;   //清除TI位
+ 106   2              Busy = 0; //清忙标志
+ 107   2          }
+ 108   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    152    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     84    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+C51 COMPILER V9.59.0.0   MAIN                                                              07/15/2018 18:15:19 PAGE 3   
+
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

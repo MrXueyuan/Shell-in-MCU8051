@@ -10,8 +10,12 @@
 /* 主调用头文件 */
 #include "..\..\inc\Main\stdafx.h"
 
-/* 变量 */
-u8  Con_C_cache = 0;        //控制台指针缓存
+/* 变量调用初始化 */
+data bit Con_Flag = 0;    //输入待处理标志
+xdata char Con_cache[80]; //控制台缓存
+data u8 Con_C_cache = 0;  //控制台指针缓存
+data u8 count_Stime = 0;  //时间计数
+xdata u32 SystemTime = 0; //系统时间
 
 /*************************************************
  * Function:        Init
@@ -52,6 +56,27 @@ int main(void)
 }
 
 /*************************************************
+ * Function:        STime
+ * Description:     系统时间定时器
+ * Calls:           none
+ * Called By:       STimeInit
+ * Input:           none
+ * Output:          SystemTime
+ * Return:          void
+ *************************************************/
+void STime(void) interrupt 3 using 1
+{
+    TL1 = 0x00;            //复位定时初值
+    TH1 = 0x4C;            //复位定时初值
+    count_Stime++;         //时间计数递增
+    if (count_Stime == 20) //时间计数置位
+    {
+        count_Stime = 0; //复位时间计数
+        SystemTime += 1; //系统时间计时
+    }
+}
+
+/*************************************************
  * Function:        Uart_Service
  * Description:     串口服务程序
  * Calls:           none
@@ -64,13 +89,16 @@ void Uart_Service() interrupt 4 using 1
 {
     if (RI)
     {
-        ES=0;   //暂停串口中断
-        if (SBUF!=0x0d) 
-            Con_Flag = true;
+        ES = 0;           //暂停串口中断  停干扰
+        if (SBUF != 0x0d) //判断回车
+        {
+            Con_Flag = 1;    //输入待处理标志为True
+            Con_C_cache = 0; //指针置零
+        }
         else
-            Con_cache[Con_C_cache++] = SBUF;    //将串口输入缓冲区的数值压入缓冲区指针
-        RI = 0; //清除RI位
-        ES=1;   //打开串口中断
+            Con_cache[Con_C_cache++] = SBUF; //将串口输入缓冲区的数值压入缓冲区指针
+        RI = 0;                              //清除RI位
+        ES = 1;                              //打开串口中断
     }
     if (TI)
     {

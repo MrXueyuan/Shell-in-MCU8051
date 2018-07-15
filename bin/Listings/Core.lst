@@ -1,0 +1,112 @@
+C51 COMPILER V9.59.0.0   CORE                                                              07/15/2018 18:15:19 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE CORE
+OBJECT MODULE PLACED IN .\Objects\Core.obj
+COMPILER INVOKED BY: D:\Program Files\Keil\C51\BIN\C51.EXE ..\src\Shell\Core.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTE
+                    -ND PRINT(.\Listings\Core.lst) TABS(2) OBJECT(.\Objects\Core.obj)
+
+line level    source
+
+   1          /***************************************************************************** 
+   2           * File name:       core.c
+   3           * Description:     shell内核函数，实现对其他shell工具的调用
+   4           * Author:          Mr.Xueyuan
+   5           * Version:         v0.0.03-Frame
+   6           * Date:            2018/7/1
+   7           * History:         git
+   8           *****************************************************************************/
+   9          
+  10          /* 链接头文件 */
+  11          #include "..\..\inc\Main\stdafx.h"
+  12          
+  13          /* 变量调用 */
+  14          
+  15          /* 显示文本 */
+  16          xdata char Boot_inf_UART[] = {
+  17              "/r/n ...   ..."
+  18              "/r/n"
+  19              "/r/n UART init OK"}; //伪装代码
+  20          
+  21          xdata char Boot_inf_sys[] = {
+  22              "/r/n System Boot Now ..."}; //启动
+  23          
+  24          xdata char Boot_inf_STime[] = {
+  25              "/r/n System Time Boot Now ..."
+  26              "/r/n STime init OK"}; //系统时钟初始化提示信息
+  27          
+  28          xdata char Sys_inf_Head[] = {
+  29              "/r/n User@STC12C5A60S2/t# "}; //默认提示信息
+  30          
+  31          /*************************************************
+  32           * Function:        InitShell
+  33           * Description:     初始化Shell
+  34           * Calls:           run
+  35           * Called By:       main
+  36           * Input:           none
+  37           * Output:          void
+  38           * Return:          void
+  39           *************************************************/
+  40          void InitShell(void)
+  41          {
+  42   1          SendString(&Boot_inf_UART);
+  43   1          SendString(&Boot_inf_sys);
+  44   1          STimeInit();
+  45   1          SendString(&Boot_inf_STime);
+  46   1          SendString(&Sys_inf_Head);
+  47   1          run();
+  48   1      }
+  49          
+  50          /*************************************************
+  51           * Function:        run
+  52           * Description:     shell运行
+  53           * Calls:           none
+  54           * Called By:       main
+C51 COMPILER V9.59.0.0   CORE                                                              07/15/2018 18:15:19 PAGE 2   
+
+  55           * Input:           none
+  56           * Output:          void
+  57           * Return:          void
+  58           *************************************************/
+  59          void run(void)
+  60          {
+  61   1          if (Con_Flag == 1)
+  62   1          {
+  63   2              SendString(&Con_cache);
+  64   2              Con_Flag = 0;
+  65   2          }
+  66   1      }
+  67          
+  68          /*************************************************
+  69           * Function:        STimeInit
+  70           * Description:     系统时间定时器初始化 (T1)
+  71           * Calls:           none
+  72           * Called By:       STimeInit
+  73           * Input:           none
+  74           * Output:          SystemTime
+  75           * Return:          void
+  76           *************************************************/
+  77          void STimeInit(void) //50毫秒@11.0592MHz
+  78          {
+  79   1        AUXR &= 0xBF;   //定时器时钟12T模式
+  80   1        TMOD &= 0x0F;   //设置定时器模式
+  81   1        TMOD |= 0x10;   //设置定时器模式
+  82   1        TL1 = 0x00;   //设置定时初值
+  83   1        TH1 = 0x4C;   //设置定时初值
+  84   1        TF1 = 0;    //清除TF1标志
+  85   1        TR1 = 1;    //定时器1开始计时
+  86   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     77    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    136    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,138 @@
+C51 COMPILER V9.59.0.0   UART                                                              07/15/2018 18:15:19 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\Objects\UART.obj
+COMPILER INVOKED BY: D:\Program Files\Keil\C51\BIN\C51.EXE ..\src\UART\UART.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\UART.lst) TABS(2) OBJECT(.\Objects\UART.obj)
+
+line level    source
+
+   1          /***************************************************************************** 
+   2           * File name:       UART.c
+   3           * Description:     串口函数文件，用于初始化串口及对串口函数的调用。
+   4           * Author:          Mr.Xueyuan
+   5           * Version:         v0.0.03-Frame
+   6           * Date:            2018/7/1
+   7           * History:         git
+   8           *****************************************************************************/
+   9          
+  10          /* 链接头文件 */
+  11          #include "..\..\inc\Main\stdafx.h"
+  12          
+  13          /* 定义变量 */
+  14          bit Busy = 0;
+  15          
+  16          /* 定义UART校验位 */
+  17          #define PARITYBIT NONE_PARITY
+  18          
+  19          /* 定义UART奇偶校验位 */
+  20          #define NONE_PARITY 0 //无校验
+  21          #define ODD_PARITY 1  //奇校验
+  22          #define EVEN_PARITY 2 //偶校验
+  23          
+  24          /*************************************************
+  25           * Function:        UartInit
+  26           * Description:     串口初始化
+  27                              独立波特率发生器，串口1
+  28           * Calls:           none
+  29           * Called By:       Init
+  30           * Input:           none
+  31           * Output:          void
+  32           * Return:          void
+  33           *************************************************/
+  34          void UartInit(void)
+  35          {
+  36   1          PCON &= 0x7F; //波特率不倍速
+  37   1      
+  38   1      /* 波特率及校验位设置 */
+  39   1      #if (PARITYBIT == NONE_PARITY)
+  40   1          SCON = 0x50; //8位可变波特率
+  41   1      #elif (PARITYBIT == ODD_PARITY) || (PARITYBIT == EVEN_PARITY) || (PARITYBIT == MARK_PARITY)
+                  SCON = 0xDA; //9位可变波特率,校验位初始为1
+              #elif (PARITYBIT == SPACE_PARITY)
+                  SCON = 0xD2; //9位可变波特率,校验位初始为0
+              #endif
+  46   1      
+  47   1          AUXR |= 0x04;                        //独立波特率发生器时钟为Fosc,即1T
+  48   1          BRT = 255 - (int)(FOSC / BAUD / 32); //设定独立波特率发生器重装值
+  49   1          AUXR |= 0x01;                        //串口1选择独立波特率发生器为波特率发生器
+  50   1          AUXR |= 0x10;                        //启动独立波特率发生器
+  51   1          ES = 1;                              //启动串口1中断
+  52   1      }
+  53          
+  54          /*************************************************
+C51 COMPILER V9.59.0.0   UART                                                              07/15/2018 18:15:19 PAGE 2   
+
+  55           * Function:        SendData
+  56           * Description:     串口发送单字节
+  57           * Calls:           none
+  58           * Called By:       main,SendString
+  59           * Input:           Char:16位数.串口发送数据
+  60           * Output:          void
+  61           * Return:          void
+  62           *************************************************/
+  63          void SendData(char dat)
+  64          {
+  65   1          while (Busy)
+  66   1              ; //等待前面的数据发送完成
+  67   1      
+  68   1      #if (PARITYBIT != NONE_PARITY)
+                  ACC = dat; //获取校验位P (PSW.0)
+                  if (P)     //根据P来设置校验位
+                  {
+              #if (PARITYBIT == ODD_PARITY)
+                      TB8 = 0; //设置校验位为0
+              #elif (PARITYBIT == EVEN_PARITY)
+                      TB8 = 1; //设置校验位为1
+              #endif
+                  }
+                  else
+                  {
+              #if (PARITYBIT == ODD_PARITY)
+                      TB8 = 1; //设置校验位为1
+              #elif (PARITYBIT == EVEN_PARITY)
+                      TB8 = 0; //设置校验位为0
+              #endif
+                  }
+              #endif
+  87   1      
+  88   1      #if (PARITYBIT != NONE_PARITY)
+                  SBUF = ACC; //将已经进行校验的9位数据写到UART数据寄存器
+              #else
+  91   1          SBUF = dat;  //写8位数据到UART数据寄存器
+  92   1      #endif
+  93   1      
+  94   1          Busy = 1;
+  95   1      }
+  96          
+  97          /*************************************************
+  98           * Function:        SendString
+  99           * Description:     串口发送字符串
+ 100           * Calls:           SendData
+ 101           * Called By:       main
+ 102           * Input:           Char:字符串指针
+ 103           * Output:          void
+ 104           * Return:          void
+ 105           *************************************************/
+ 106          void SendString(char *s)
+ 107          {
+ 108   1          while (*s != '\0')
+ 109   1              SendData(*s++);
+ 110   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     66    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+C51 COMPILER V9.59.0.0   UART                                                              07/15/2018 18:15:19 PAGE 3   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

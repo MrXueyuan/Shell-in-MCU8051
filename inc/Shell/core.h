@@ -8,9 +8,11 @@
  *****************************************************************************/
 
 #ifndef CORE_H_
-    #define CORE_H_
+#define CORE_H_
 
-    /* 内核初始化函数 */
-    extern void InitShell(void);
+/* 内核初始化函数 */
+extern void InitShell(void);
+extern void run(void);
+extern void STimeInit(void);
 
 #endif /* CORE_H_ */
